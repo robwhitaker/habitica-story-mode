@@ -1,0 +1,19 @@
+{
+  "name": "habitica-story-mode",
+  "version": "1.0.0",
+  "description": "Story Mode for Habitica",
+  "scripts": {
+    "clean": "rm -rf node_modules output dist .spago build .cache",
+    "build": "spago bundle-app --to build/index.js",
+    "dev": "parcel -d build/parcel client/index.html & spago bundle-app --watch --to build/index.js"
+  },
+  "author": "Rob Whitaker",
+  "license": "BSD-3-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/robwhitaker/habitica-story-mode.git"
+  },
+  "dependencies": {
+    "virtual-dom": "^2.1.1"
+  }
+}
