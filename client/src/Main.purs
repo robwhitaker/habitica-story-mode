@@ -86,11 +86,11 @@ init = { number: 0, messages: ["one", "two", "three"] }
 webhookEvents :: Subscription
 webhookEvents sendToApp = liftEffect do
     socket <- WS.create "wss://echo.websocket.org" []
-    listener <- Event.eventListener \ev ->
-        for_ (WS.data_ <$> WS.fromEvent ev) \fMessage ->
-            for_ (runExcept $ readString fMessage) \message -> do
-                sendToApp (WebhookMessageReceived message)
-    Event.addEventListener WS.onMessage listener false (WS.toEventTarget socket)
+    messageListener <- Event.eventListener $
+        WS.fromEvent >>> traverse_
+            ( WS.data_ >>> readString >>> runExcept
+                >>> traverse_ (WebhookMessageReceived >>> sendToApp) )
+    Event.addEventListener WS.onMessage messageListener false (WS.toEventTarget socket)
     void $ setInterval 3000 $ WS.sendString socket "hi ho hello there"
 
 subscriptions :: Array Subscription
